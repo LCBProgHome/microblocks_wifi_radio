@@ -53,7 +53,7 @@ class Radio:
         if data[3] != self._group:
             return False
 
-        the_number = data[4] | (data[5] << 8) | (data[6] << 16) | (data[7] << 24)
+        the_number = struct.unpack("<i", data[4:8])
         the_string = data[8:].decode("utf-8")  # Assuming the message is a bytes object
 
         return (the_number, the_string)
@@ -62,7 +62,7 @@ class Radio:
         msg = bytearray()
         msg.extend(b"MBR")
         msg.append(self._group)
-        msg.extend(struct.pack("<I", n))
+        msg.extend(struct.pack("<i", n))
         msg.extend(s.encode("utf-8"))
         broadcast_address = ("255.255.255.255", self._port)
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
